@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "types": ["jest"],
     // Enable latest features
     "lib": ["ESNext", "DOM"],
     "target": "ESNext",

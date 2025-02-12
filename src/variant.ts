@@ -1,16 +1,5 @@
 import type {Add} from 'ts-arithmetic';
-
-const tagSymbol = Symbol.for("@safezone/variant");
-
-/**
- * A utility type that (ab)uses variance to check
- * if two types are exactly equal (as opposed to subtypes)
- */
-type IsEqual<A, B> = [A] extends [B]
-    ? [B] extends [A]
-        ? 1
-        : 0
-    : 0;
+import type {IsEqual} from "./types.ts";
 
 type TupleProps<Arr extends unknown[], Props extends Record<string, unknown> = {}, Index extends number = 0> =
     Arr extends [infer _, ...infer Tail]
