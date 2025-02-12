@@ -104,9 +104,9 @@ bun test
     - [ ] tags for discriminated unions and branded types MUST match their constructor name
         > NOTE: add option to allow for prepending the module name and/or literal prefixes e.g. org name
 - [ ] add linter configuration
-    - custom rules
-    - existing typescript rules
-    - maybe use eslint-plugin-functional for some?
+    - [ ] custom rules
+    - [ ] existing typescript rules
+    - [ ] research using eslint-plugin-functional
 - [ ] add tests
 - [ ] write real-world examples
 - [ ] write documentation
