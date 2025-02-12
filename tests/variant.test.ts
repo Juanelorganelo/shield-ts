@@ -1,16 +1,16 @@
-import {type Brand, refined, Variant} from "../src";
+import {type Brand, nominal, Variant} from "../src";
 
 // We can combine branded types with phantom types
 // to leverage zero-overhead compile-time safety.
 // Id<Template> wouldn't be assignable to Id<Course>
 type Id<Phantom, Type = number> = Type & Brand<'Id'>;
+const id = <Phantom, Type = number>(value: Type): Id<Phantom, Type> => {
+    return value as Id<Phantom, Type>
+}
 
 type Email = string & Brand<'Email'>;
 
-const EMAIL_REGEXP = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-const email = refined<Email>(
-    value => value.toLowerCase().match(EMAIL_REGEXP) ? null : `Invalid email address: ${value}`,
-);
+const email = nominal<Email>();
 
 describe('Variant', () => {
     class Admin extends Variant.Record("Admin")<{
@@ -28,14 +28,14 @@ describe('Variant', () => {
     }> {
     }
 
-    type Role = Admin | Instructor | Student;
+    type User = Admin | Instructor | Student;
 
     test('adds args to the instance as properties', () => {
-        class X extends Variant.Record("X")<{ x: number, y: string }> {
-        }
-
-        const x = new X({x: 1, y: "w"});
-        expect(x).toHaveProperty("x", 1);
-        expect(x).toHaveProperty("y", "w");
+        const admin = new Admin({
+            id: id<Admin>(1),
+            email: email('foo@admin.com'),
+        });
+        expect(admin.id).toEqual(id<Admin>(1));
+        expect(admin.email).toEqual(email('foo@admin.com'));
     });
 });
