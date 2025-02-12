@@ -105,6 +105,7 @@ bun test
 ```
 
 ## TODO
+- [ ] rename `Variant.Record` to `Case` and `Variant.Tuple` to `Case.Tuple`
 - [ ] add linter rules
     - functions that throw MUST have never in they're return type
     - functions with never as their return type MUST throw
