@@ -1,6 +1,5 @@
 import type { Add } from "ts-arithmetic";
 import type { IsEqual, Simplify } from "./types.ts";
-import { startsWith } from "./utils.ts";
 
 type TupleProps<
   Arr extends unknown[],
@@ -27,32 +26,16 @@ interface TupleConstructor<Tag extends string> {
  * @returns A class constructor that creates a Variant instance.
  */
 export function Tuple<const Tag extends string>(tag: Tag): TupleConstructor<Tag> {
-  abstract class Variant<A extends unknown[]> {
+  abstract class Variant<const A extends unknown[]> {
     readonly tag = tag;
 
     protected constructor(...args: A) {
-      return new Proxy(this, {
-        get(target, prop, receiver) {
-          if (typeof prop === "string" && startsWith(prop, "$")) {
-            const index = Number(prop.slice(1));
-            if (Number.isNaN(index)) {
-              return Reflect.get(target, prop, receiver);
-            }
-            return Reflect.get(target, index, args);
-          }
-          return Reflect.get(target, prop, receiver);
-        },
-        has(target, prop) {
-          if (typeof prop === "string" && startsWith(prop, "$")) {
-            const index = Number(prop.slice(1));
-            if (Number.isNaN(index)) {
-              return Reflect.has(target, prop);
-            }
-            return Reflect.has(args, index);
-          }
-          return Reflect.has(target, prop);
-        },
-      });
+      // Since A is a tuple it's small so this is likely faster
+      // than using a Proxy on this to read the values from the array.
+      let i = args.length;
+      while (--i) {
+        (this as Record<string, unknown>)[`$${i}`] = args[i];
+      }
     }
   }
 
