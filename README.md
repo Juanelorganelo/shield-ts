@@ -21,16 +21,13 @@ In `shield-ts`, a _refined type_ is a TypeScript-first implementation of what's 
 In `shield-ts` smart constructors are created by defining a _branded type_ and using `refined` to define constructor functions for it.
 
 ```typescript
-import { type Brand, nominal } from 'shield-ts';
+import { type Brand, refined } from 'shield-ts';
 
-// The linter will ensure that the Brand's tag 'Email' matches the name of the type definition
-export type Email = string & Brand<'Email'>;
-export const email = nominal<Email>();
 
 // Branded types.
 // This are runtime wrappers that perform parsing
 // and ensure that the create type is always correct.
-type Email = string & Branded<'Email'>;
+type Email = string & Brand<'Email'>;
 const isEmailAddress = (value: string): boolean => {
     // Email-checking logic...
 };
@@ -47,17 +44,17 @@ class SmtpClient {
 
 // We can be sure at compile-time that email is a valid email
 // since we can only construct values of type Email with the `email` function.
-function sendEmail(email: Email): Promise<string> {
+async function sendEmail(email: Email): Promise<string> {
     const smtp = new SmtpClient();
 
     // All Email values are 
     const address = new TextEncoder().encode(email);
     const contents = new TextEncoder().encode("Hello");
-    smtp.send(address, contents);
+    await smtp.send(address, contents);
 }
 
 const emailInput = document.getElementById('user-email');
-emailInput.addEventListener('change', event => {
+emailInput.addEventListener('change', async event => {
     // Several options for convertion string to Email
     // This option returns a union of Email | BrandedTypeError you can use
     // to display a message to your user in whichever framework you're using
