@@ -1,5 +1,4 @@
-import * as Variant from './variant.ts';
+import * as Variant from "./variant.ts";
 
 export { Variant };
-export * from './brand.ts';
-
+export * from "./brand.ts";
