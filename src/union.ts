@@ -21,12 +21,12 @@ interface TupleConstructor<Tag extends string> {
 /**
  * A utility class for defining the variants of a discriminated union
  * (a.k.a. algebraic data-type) containing tuple data which is accessible with instance.$<index>.
- * 
+ *
  * @param tag The tag for the discriminated union
  * @returns A class constructor that creates a Variant instance.
  */
-export function Tuple<const Tag extends string>(tag: Tag): TupleConstructor<Tag> {
-  abstract class Variant<const A extends unknown[]> {
+function Tuple<const Tag extends string>(tag: Tag): TupleConstructor<Tag> {
+  abstract class TupleCase<const A extends unknown[]> {
     readonly tag = tag;
 
     protected constructor(...args: A) {
@@ -39,7 +39,7 @@ export function Tuple<const Tag extends string>(tag: Tag): TupleConstructor<Tag>
     }
   }
 
-  return Variant as TupleConstructor<Tag>;
+  return TupleCase as TupleConstructor<Tag>;
 }
 
 export interface RecordConstructor<Tag extends string> {
@@ -48,8 +48,8 @@ export interface RecordConstructor<Tag extends string> {
   ): Args & { readonly tag: Tag };
 }
 
-export function Record<const Tag extends string>(tag: Tag): RecordConstructor<Tag> {
-  abstract class Variant<A extends Record<string, unknown> = {}> {
+export function Case<const Tag extends string>(tag: Tag): RecordConstructor<Tag> {
+  abstract class RecordCase<A extends Record<string, unknown> = {}> {
     readonly tag = tag;
 
     protected constructor(args: IsEqual<A, {}> extends 1 ? void : A) {
@@ -57,5 +57,14 @@ export function Record<const Tag extends string>(tag: Tag): RecordConstructor<Ta
     }
   }
 
-  return Variant as RecordConstructor<Tag>;
+  return RecordCase as RecordConstructor<Tag>;
 }
+
+/**
+ * A utility class for defining the variants of a discriminated union
+ * (a.k.a. algebraic data-type) containing tuple data which is accessible with ``instance[`$${index}`]``.
+ *
+ * @param tag The tag for the discriminated union
+ * @returns A class constructor that creates a Variant instance.
+ */
+Case.Tuple = Tuple;
