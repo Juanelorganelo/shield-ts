@@ -1,0 +1,11 @@
+{
+  "name": "shield",
+  "version": "0.0.1",
+  "description": "A TypeScript library for writing fast, secure and reliable TypeScript programs with as little runtime errors as we believe are (pragmatically) possible",
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "ts-arithmetic": "^0.1.1"
+  }
+}
