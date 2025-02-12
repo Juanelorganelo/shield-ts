@@ -14,7 +14,7 @@
 - [X] (almost) zero-overhead type-safe wrappers for other types through branded types and `newtype` 
 - [ ] has an (optional) ESLint configuration for top-notch DX
 
-## Examples
+## Concepts
 ### Refined types
 In `shield-ts`, a _refined type_ is a TypeScript-first implementation of what's often refered to as _smart constructors_ in functional programming languages. A _smart constructor_, is just a function that creates a value of a given _branded type_ while checking the validity of the data at runtime. Values of said type can't be created by wraping/unwraping (without unsafe assertions at least) and thus can only be created with the _smart constructor_(s) defined for it.
 
@@ -85,11 +85,6 @@ emailInput.addEventListener('change', event => {
 // This option throws if validation fails.
 // Very useful when prototyping.
 // const address = email.throw(event.target.value);
-```
-
-### Domain modeling
-```typescript
-
 ```
 
 ## Development
