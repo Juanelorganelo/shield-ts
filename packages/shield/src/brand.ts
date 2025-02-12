@@ -35,11 +35,11 @@ export interface RefinedBrandConstructor<A extends AnyBrand> {
 export class BrandedTypeError extends Error {}
 
 export function transparent<A extends AnyBrand>(): TransparentBrandConstructor<A> {
-    /**
-     * An (almost) zero-cost 'newtype' style wrapper for the underlying type of branded type A.
-     * @param value A value of the underlying type of branded type A
-     */
-    return <A extends AnyBrand>(value: Unbranded<A>): A => value as A;
+  /**
+   * An (almost) zero-cost 'newtype' style wrapper for the underlying type of branded type A.
+   * @param value A value of the underlying type of branded type A
+   */
+  return <A extends AnyBrand>(value: Unbranded<A>): A => value as A;
 }
 
 export function refined<A extends AnyBrand>(
@@ -64,7 +64,7 @@ export function refined<A extends AnyBrand>(
   function _throw(value: Unbranded<A>): A | never {
     const message = validate(value);
     if (message) {
-        throw message;
+      throw message;
     }
     return value as A;
   }

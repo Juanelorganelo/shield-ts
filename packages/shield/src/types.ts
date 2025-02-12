@@ -16,8 +16,6 @@ export type IsEqual<A, B> = [A] extends [B] ? ([B] extends [A] ? 1 : 0) : 0;
 /**
  * A utility type that transforms A | B into A & B
  */
-export type UnionToIntersection<T> = (
-  T extends any ? (x: T) => any : never
-) extends (x: infer R) => any
+export type UnionToIntersection<T> = (T extends any ? (x: T) => any : never) extends (x: infer R) => any
   ? R
   : never;

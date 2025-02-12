@@ -5,6 +5,9 @@
   "workspaces": [
     "packages/*"
   ],
+  "scripts": {
+    "format": "prettier --write ."
+  },
   "devDependencies": {
     "@types/bun": "^1.2.2",
     "prettier": "^3.5.0"
