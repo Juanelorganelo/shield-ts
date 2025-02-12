@@ -5,8 +5,8 @@ programs.
 ## Principles
 - We don't need [Option](https://en.wikipedia.org/wiki/Option_type) TypeScript is already `null` safe with `strictNullChecks` on.
 - Use as much of the existing type system types
-- Keep abstraction to a minimum
 - Keep the types/tools simple but powerful
+- Prefer linting to overly complex/hacky type definitions
 
 ## Installation
 SafeZone packages are available on the NPM Package Registry under the @safezone/ scope.
@@ -68,3 +68,17 @@ bun run index.ts
 ```
 
 This project was created using `bun init` in bun v1.1.43. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+
+## TODO
+- [ ] add linter rules
+    - functions that throw MUST have never in they're return type
+    - functions with never as their return type MUST throw
+    - tags for discriminated unions and branded types MUST match their constructor name
+        > NOTE: add option to allow for prepending the module name and/or literal prefixes e.g. org name
+    - branded types "brands" MUST match their type name
+- [ ] add linter configuration
+    - custom rules
+    - prefer-readonly-types
+- [ ] add tests
+- [ ] write real-world examples
+- [ ] write documentation
