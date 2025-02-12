@@ -1,4 +1,4 @@
-import {type Brand, nominal, Variant} from "../src";
+import {type Brand, newtype, Variant} from "../src";
 
 // We can combine branded types with phantom types
 // to leverage zero-overhead compile-time safety.
@@ -10,7 +10,7 @@ const id = <Phantom, Type = number>(value: Type): Id<Phantom, Type> => {
 
 type Email = string & Brand<'Email'>;
 
-const email = nominal<Email>();
+const email = newtype<Email>();
 
 describe('Variant', () => {
     class Admin extends Variant.Record("Admin")<{

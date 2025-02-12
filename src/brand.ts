@@ -28,27 +28,32 @@ export interface NominalBrandConstructor<A extends AnyBrand> {
 export interface RefinedBrandConstructor<A extends AnyBrand> {
   (value: Unbranded<A>): A | never;
 
-  orNull(value: Unbranded<A>): A | null;
+  null(value: Unbranded<A>): A | null;
+  throw(value: Unbranded<A>): A | never;
 }
 
 export class BrandedTypeError extends Error {}
 
-export function nominal<A extends AnyBrand>(): NominalBrandConstructor<A> {
-  return <A extends AnyBrand>(value: Unbranded<A>): A => value as A;
+export function newtype<A extends AnyBrand>(): NominalBrandConstructor<A> {
+    /**
+     * An (almost) zero-cost 'newtype' style wrapper for the underlying type of branded type A.
+     * @param value A value of the underlying type of branded type A
+     */
+    return <A extends AnyBrand>(value: Unbranded<A>): A => value as A;
 }
 
 export function refined<A extends AnyBrand>(
-  validate: (value: Unbranded<A>) => null | string,
+  validate: (value: Unbranded<A>) => null | BrandedTypeError,
 ): RefinedBrandConstructor<A> {
-  function ctor(value: Unbranded<A>): A | never {
+  function ctor(value: Unbranded<A>): A | BrandedTypeError {
     const message = validate(value);
-    if (message) {
-      throw new BrandedTypeError(`unsafeCtor value: ${message}`);
+    if (message instanceof BrandedTypeError) {
+      return message;
     }
     return value as A;
   }
 
-  function orNull(value: Unbranded<A>): A | null {
+  function _null(value: Unbranded<A>): A | null {
     const message = validate(value);
     if (message) {
       return null;
@@ -56,6 +61,15 @@ export function refined<A extends AnyBrand>(
     return value as A;
   }
 
-  (ctor as RefinedBrandConstructor<A>).orNull = orNull;
+  function _throw(value: Unbranded<A>): A | never {
+    const message = validate(value);
+    if (message) {
+        throw message;
+    }
+    return value as A;
+  }
+
+  (ctor as RefinedBrandConstructor<A>).null = _null;
+  (ctor as RefinedBrandConstructor<A>).throw = _throw;
   return ctor as RefinedBrandConstructor<A>;
 }
