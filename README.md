@@ -101,15 +101,15 @@ bun test
 
 ## TODO
 - [ ] rename `Variant.Record` to `Case` and `Variant.Tuple` to `Case.Tuple`
-- [ ] add linter rules
-    - functions that throw MUST have never in they're return type
-    - functions with never as their return type MUST throw
-    - tags for discriminated unions and branded types MUST match their constructor name
+- [ ] research linter rules feassability
+    - [ ] functions that use `throw` MUST have `never` in their return type
+    - [ ] functions with `never` as their return type MUST throw or call a `throw`ing function. These can be added by adding the function name to a list and checking node names (I think)
+    - [ ] tags for discriminated unions and branded types MUST match their constructor name
         > NOTE: add option to allow for prepending the module name and/or literal prefixes e.g. org name
-    - branded types "brands" MUST match their type name
 - [ ] add linter configuration
     - custom rules
-    - prefer-readonly-types
+    - existing typescript rules
+    - maybe use eslint-plugin-functional for some?
 - [ ] add tests
 - [ ] write real-world examples
 - [ ] write documentation
