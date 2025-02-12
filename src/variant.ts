@@ -1,5 +1,6 @@
 import type { Add } from "ts-arithmetic";
 import type { IsEqual, Simplify } from "./types.ts";
+import { startsWith } from "./utils.ts";
 
 type TupleProps<
   Arr extends unknown[],
@@ -18,20 +19,12 @@ interface TupleConstructor<Tag extends string> {
   new <A extends unknown[] = []>(...args: A): TupleProps<A> & { readonly tag: Tag };
 }
 
-const startsWith: <const S extends string>(self: string, check: S) => self is `${S}${string}` = String
-  .prototype.startsWith as any;
-
 /**
- * A utility class for defining the variants of a discriminated union (a.k.a. algebraic data-type)
- * containing tuple data which is accessible by a property instance.$<index>
+ * A utility class for defining the variants of a discriminated union
+ * (a.k.a. algebraic data-type) containing tuple data which is accessible with instance.$<index>.
+ * 
  * @param tag The tag for the discriminated union
  * @returns A class constructor that creates a Variant instance.
- * @example
- *
- * import { Variant } from '@safezone/variant';
- *
- * // Variant of a single tuple.
- * class Ok<A> extends Variant.Tuple('Ok')<[A]> {}
  */
 export function Tuple<const Tag extends string>(tag: Tag): TupleConstructor<Tag> {
   abstract class Variant<A extends unknown[]> {
