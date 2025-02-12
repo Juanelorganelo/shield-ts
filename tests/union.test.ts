@@ -1,9 +1,9 @@
-import {type Brand, newtype, Case } from "../src";
+import {type Brand, transparent, Case } from "../src";
 
 
 describe('Case', () => {
     type Email = string & Brand<'Email'>;
-    const email = newtype<Email>();
+    const email = transparent<Email>();
 
     class Admin extends Case("Admin")<{
         readonly id: number,

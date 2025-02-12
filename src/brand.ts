@@ -21,7 +21,7 @@ export type Brands<P> =
 
 export type Unbranded<A extends AnyBrand> = A extends infer U & Brands<A> ? U : never;
 
-export interface NominalBrandConstructor<A extends AnyBrand> {
+export interface TransparentBrandConstructor<A extends AnyBrand> {
   (value: Unbranded<A>): A;
 }
 
@@ -34,7 +34,7 @@ export interface RefinedBrandConstructor<A extends AnyBrand> {
 
 export class BrandedTypeError extends Error {}
 
-export function newtype<A extends AnyBrand>(): NominalBrandConstructor<A> {
+export function transparent<A extends AnyBrand>(): TransparentBrandConstructor<A> {
     /**
      * An (almost) zero-cost 'newtype' style wrapper for the underlying type of branded type A.
      * @param value A value of the underlying type of branded type A
