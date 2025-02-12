@@ -15,11 +15,27 @@
 - [ ] has an (optional) ESLint configuration for top-notch DX
 
 ## Concepts
+### Branded types
+A branded type is just a TypeScript type that's intersecting with a `Brand<{string_literal}>`.
+This allows TypeScript to distinctly identify say `type Money = number & Brand<'Money'>` from `type Grams = number & Brand<'Grams'>` and allows us to create values of those types with (almost) zero runtime overhead.
+
+#### Example
+```typescript
+import { type Brand, branded } from 'shield-ts';
+```
+
+#### Caveats
+Because of limitations with TypeScript (in particular lack of higher-kinded polymorphism or metaprogramming facilities) we can't currently create brand constructors for a type with generic parameters.
+
+```typescript
+```
+
 ### Refined types
-In `shield-ts`, a _refined type_ is a TypeScript-first implementation of what's often refered to as _smart constructors_ in functional programming languages. A _smart constructor_, is just a function that creates a value of a given _branded type_ while checking the validity of the data at runtime. Values of said type can't be created by wraping/unwraping (without unsafe assertions at least) and thus can only be created with the _smart constructor_(s) defined for it.
+A _refined type_ is a [_branded type_](#branded-types) coupled with what's often refered to as _smart constructors_ in functional programming languages. A _smart constructor_, is just a function that creates a value of a given _branded type_ while checking the validity of the data at runtime. Values of said type can't be created by wraping/unwraping (without unsafe assertions at least) and thus can only be created with the _smart constructor_(s) defined for it.
 
 In `shield-ts` smart constructors are created by defining a _branded type_ and using `refined` to define constructor functions for it.
 
+#### Example
 ```typescript
 import { type Brand, refined } from 'shield-ts';
 
@@ -84,6 +100,31 @@ emailInput.addEventListener('change', async event => {
 // const address = email.throw(event.target.value);
 ```
 
+### Phantom types
+_phantom types_ aren't a `shield-ts` concept but more of a general programming concept. A phantom type is at it's core a type parameter that's not used in the type definition. You may wonder what's the point of declaring an unsued type parameter, well when used in conjuction with branded types we can use it to encode information at compile-time about the behaviour of our program.
+
+```ts
+import { type Brand, branded, Case, Data } from 'shield-ts';
+
+export type Id<Tid, A> = A & Brand<'Id'>;
+/**
+ * We can't create constructors for branded types with generics
+ * but you can define them yourself by hand.
+ * For this reason, we export commonly used branded types with generics.
+ * As such, the type define in this example is already bundled with the library.
+ */
+export const id = <Tid, A>(value: A): Id<Tid, A> =>
+    value as Id<Tid, A>;
+
+export type Username = string & Brand<'Username'>;
+export const username = branded<Username>();
+
+export class User extends Data<{
+    readonly id: Id<User, number>,
+    readonly username: Username,
+}> {}
+```
+
 ## Development
 
 ### Install dependencies
@@ -97,6 +138,7 @@ bun test
 ```
 
 ## TODO
+- [ ] add Zod compatibility
 - [ ] rename `Variant.Record` to `Case` and `Variant.Tuple` to `Case.Tuple`
 - [ ] research linter rules feassability
     - [ ] functions that use `throw` MUST have `never` in their return type
