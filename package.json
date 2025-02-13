@@ -1,18 +1,21 @@
 {
   "name": "@shield/root",
   "module": "index.ts",
-  "type": "module",
-  "workspaces": [
-    "packages/*"
-  ],
-  "scripts": {
-    "format": "prettier --write ."
-  },
   "devDependencies": {
     "@types/bun": "^1.2.2",
     "prettier": "^3.5.0"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
+  },
+  "scripts": {
+    "format": "prettier --write ."
+  },
+  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
+  "dependencies": {
+    "@typescript-eslint/utils": "^8.24.0"
   }
 }
