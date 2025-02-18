@@ -2,7 +2,7 @@ import type { UnionToIntersection } from "./types.ts";
 
 const brandTypeId = Symbol.for("brandTypeId");
 
-type AnyBrand = Brand<string>;
+export type AnyBrand = Brand<string>;
 
 export interface Brand<in out Tag extends string | symbol> {
   readonly [brandTypeId]: {
