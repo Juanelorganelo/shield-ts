@@ -20,6 +20,33 @@
 - [ ] has an (optional) ESLint configuration for top-notch DX
 
 ## Concepts
+### Discriminated unions (a.k.a. ADTs)
+In TypeScript a _discriminated union_ is just a union of object types where they have a common property that's different between all of them, this is known as a _discriminant_.
+`shield-ts` provides some useful utilities for working with discriminated unions.
+
+```ts
+import { Case } from 'shield-ts';
+
+export class Admin extends Case("Admin")<{
+  readonly id: number;
+  readonly email: string;
+}> {}
+export class Instructor extends Case("Instructor")<{
+  readonly id: number;
+  readonly email: string;
+}> {}
+export class Student extends Case.Tuple("Student")<[string]> {}
+
+export type User = Admin | Instructor | Student;
+
+const admin: User = new Admin({ id: 2, email: "admin@edu.com" });
+const instructor: User = new Instructor({ id: 3, email: "instructor@edu.com"})
+const student: User = new Student("blep@bloop.com");
+
+console.log(admin.email); // admin@edu.com
+console.log(instructor.email); // instructor@edu.com
+console.log(student.$0); // blep@bloop.com
+```
 
 ### Branded types
 
@@ -47,17 +74,17 @@ doSomeMgCalc();
 Because of limitations with TypeScript (in particular lack of higher-kinded polymorphism or metaprogramming facilities) we can't currently create brand constructors for a type with generic parameters.
 
 ```typescript
-import { type Brand, newtype } from 'shield-ts';
+import { type Brand, transparent } from 'shield-ts';
 
 export type Id<P> = number & Brand<'Id'>;
 // What do we set "P" to?
-export const id = newtype<Id<???>>();
+export const id = transparent<Id<???>>();
 ```
 
 We can however, create constructor the type by hand.
 
 ```typescript
-import { type Brand, newtype } from 'shield-ts';
+import { type Brand } from 'shield-ts';
 
 export type Id<P> = number & Brand<'Id'>;
 // We need an ugly cast for this to work :c
