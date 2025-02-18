@@ -29,7 +29,17 @@ This allows TypeScript to distinctly identify say `type Money = number & Brand<'
 #### Example
 
 ```typescript
-import { type Brand, branded } from "shield-ts";
+import { type Brand, newtype } from "shield-ts";
+
+type Grams = number & Brand<'Grams'>;
+const Grams = newtype<Grams>();
+
+type Milligrams = number & Brand<'Milligrams'>;
+const Milligrams = newtype<Milligrams>();
+
+declare function doSomeMgCalc(mg: Milligrams): Grams;
+
+doSomeMgCalc();
 ```
 
 #### Caveats
@@ -37,8 +47,24 @@ import { type Brand, branded } from "shield-ts";
 Because of limitations with TypeScript (in particular lack of higher-kinded polymorphism or metaprogramming facilities) we can't currently create brand constructors for a type with generic parameters.
 
 ```typescript
+import { type Brand, newtype } from 'shield-ts';
 
+export type Id<P> = number & Brand<'Id'>;
+// What do we set "P" to?
+export const id = newtype<Id<???>>();
 ```
+
+We can however, create constructor the type by hand.
+
+```typescript
+import { type Brand, newtype } from 'shield-ts';
+
+export type Id<P> = number & Brand<'Id'>;
+// We need an ugly cast for this to work :c
+export const id = <P>(value: number): Id<P> => value as unknown as Id<P>;
+```
+
+For this and other reasons `shield-ts` exports commonly used branded types which includes an `Id` type that's very similar to the one defined above.
 
 ### Refined types
 
