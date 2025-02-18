@@ -59,10 +59,10 @@ This allows TypeScript to distinctly identify say `type Money = number & Brand<'
 import { type Brand, transparent } from "shield-ts";
 
 type Grams = number & Brand<'Grams'>;
-const Grams = transparent<Grams>();
+const grams = transparent<Grams>();
 
 type Milligrams = number & Brand<'Milligrams'>;
-const Milligrams = transparent<Milligrams>();
+const milligrams = transparent<Milligrams>();
 
 declare function doSomeMgCalc(mg: Milligrams): Grams;
 
@@ -167,7 +167,7 @@ emailInput.addEventListener("change", async (event) => {
 _phantom types_ aren't a `shield-ts` concept but more of a general programming concept. A phantom type is at it's core a type parameter that's not used in the type definition. You may wonder what's the point of declaring an unsued type parameter, well when used in conjuction with branded types we can use it to encode information at compile-time about the behaviour of our program. Let's say we're writing a web application, in this app we need to differentiate between `Id`s of different types. We can achieve this by adding a _phantom type_ that acts like a _discriminant_ so that `Id<User>` and `Id<Item>` have different type system identities
 
 ```ts
-import { type Brand, branded, Case, Data } from "shield-ts";
+import { type Brand, transparent, Case, Data } from "shield-ts";
 
 export type Id<Tid, A> = A & Brand<"Id">;
 /**
@@ -179,7 +179,7 @@ export type Id<Tid, A> = A & Brand<"Id">;
 export const id = <Tid, A>(value: A): Id<Tid, A> => value as Id<Tid, A>;
 
 export type Username = string & Brand<"Username">;
-export const username = branded<Username>();
+export const username = transparent<Username>();
 
 export class User extends Data<{
   readonly id: Id<User, number>;
