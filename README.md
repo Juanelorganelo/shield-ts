@@ -29,13 +29,13 @@ This allows TypeScript to distinctly identify say `type Money = number & Brand<'
 #### Example
 
 ```typescript
-import { type Brand, newtype } from "shield-ts";
+import { type Brand, transparent } from "shield-ts";
 
 type Grams = number & Brand<'Grams'>;
-const Grams = newtype<Grams>();
+const Grams = transparent<Grams>();
 
 type Milligrams = number & Brand<'Milligrams'>;
-const Milligrams = newtype<Milligrams>();
+const Milligrams = transparent<Milligrams>();
 
 declare function doSomeMgCalc(mg: Milligrams): Grams;
 
@@ -137,7 +137,7 @@ emailInput.addEventListener("change", async (event) => {
 
 ### Phantom types
 
-_phantom types_ aren't a `shield-ts` concept but more of a general programming concept. A phantom type is at it's core a type parameter that's not used in the type definition. You may wonder what's the point of declaring an unsued type parameter, well when used in conjuction with branded types we can use it to encode information at compile-time about the behaviour of our program.
+_phantom types_ aren't a `shield-ts` concept but more of a general programming concept. A phantom type is at it's core a type parameter that's not used in the type definition. You may wonder what's the point of declaring an unsued type parameter, well when used in conjuction with branded types we can use it to encode information at compile-time about the behaviour of our program. Let's say we're writing a web application, in this app we need to differentiate between `Id`s of different types. We can achieve this by adding a _phantom type_ that acts like a _discriminant_ so that `Id<User>` and `Id<Item>` have different type system identities
 
 ```ts
 import { type Brand, branded, Case, Data } from "shield-ts";
