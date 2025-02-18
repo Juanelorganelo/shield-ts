@@ -4,14 +4,11 @@ export const name = 'brands-only-in-types';
 export const rule = createRule({
   create(_context) {
     return {
-      TSTypeAliasDeclaration(node, ...rest) {
-        console.log('node', node);
-        console.log('rest', rest);
-      },
-      TSTypeAnnotation(node, ...rest) {
-        console.log('node', node);
-        console.log('rest', rest);
-      }
+      TSTypeAssertion(node) {},
+      TSTypeAnnotation(node) {},
+      TSInterfaceDeclaration(node) {},
+      PropertyDefinition(node) {},
+      TSAbstractPropertyDefinition(node) {},
     };
   },
   name,

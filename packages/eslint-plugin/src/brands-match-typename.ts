@@ -8,12 +8,16 @@ export const rule = createRule({
         console.log('node', node);
         console.log('rest', rest);
       },
+      TSTypeAnnotation(node, ...rest) {
+        console.log('node', node);
+        console.log('rest', rest);
+      }
     };
   },
   name,
   meta: {
     docs: {
-      description: 'Do some cool shit',
+      description: 'Ensures that the tag of a branded type matches the name for its `type` alias definition',
     },
     messages: {
       brandNotMatchTypename: 'Brand names for branded types must match they\'re brand name',
