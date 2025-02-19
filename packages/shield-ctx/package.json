@@ -1,0 +1,8 @@
+{
+  "name": "@shield/ctx",
+  "version": "0.1.0",
+  "description": "Type-safe dependency injection via immutable contexts",
+  "devDependencies": {
+    "shield": "workspace:*"
+  }
+}
