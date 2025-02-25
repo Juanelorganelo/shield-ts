@@ -1,4 +1,5 @@
 # :warning: WIP :warning:
+This library is still under heavy development
 
 # shield-ts
 
