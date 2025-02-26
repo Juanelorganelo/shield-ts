@@ -1,5 +1,9 @@
 import { createRule } from "./create-rule";
 
+const isBrandedType = (node: unknown) => {
+    console.log('node', node);
+};
+
 export const name = 'brand-match-typename';
 export const rule = createRule({
   create(_context) {
