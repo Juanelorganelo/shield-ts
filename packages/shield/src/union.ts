@@ -1,6 +1,9 @@
 import type { Add } from "ts-arithmetic";
 import type { IsEqual, Simplify } from "./types.ts";
 
+/**
+ * Get the props for a tuple variant from its args.
+ */
 type TupleProps<
   Arr extends unknown[],
   Props extends Record<string, unknown> = {},
@@ -24,6 +27,17 @@ interface TupleConstructor<Tag extends string> {
  *
  * @param tag The tag for the discriminated union
  * @returns A class constructor that creates a Variant instance.
+ *
+ * @example
+ * import { Case } from "shield-ts";
+ *
+ * export class Ok<T> extends Case.Tuple("Ok")<[T]> {}
+ * export class Err<T> extends Case.Tuple("Err")<[T]> {}
+ *
+ * export type Result<T, E> = Ok<T> | Err<T>;
+ *
+ * const value: Result<string, string> = new Ok('ok');
+ * console.log(value.$0); // ok
  */
 function Tuple<const Tag extends string>(tag: Tag): TupleConstructor<Tag> {
   abstract class TupleCase<const A extends unknown[]> {
@@ -43,11 +57,16 @@ function Tuple<const Tag extends string>(tag: Tag): TupleConstructor<Tag> {
 }
 
 export interface RecordConstructor<Tag extends string> {
-  new <Args extends Record<string, unknown> = {}>(
+  new <Args extends Record<string | symbol, unknown> = {}>(
     args: IsEqual<Args, {}> extends 1 ? void : Args,
   ): Args & { readonly tag: Tag };
 }
 
+/**
+ * A class factory function that returns a class you can extend to create
+ * the variants of a discriminated with a single symbol.
+ * @param tag The discriminant tag for the union variant.
+ */
 export function Case<const Tag extends string>(tag: Tag): RecordConstructor<Tag> {
   abstract class RecordCase<A extends Record<string, unknown> = {}> {
     readonly tag = tag;
