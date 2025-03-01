@@ -56,6 +56,7 @@
  * interface User { id: Id<User>, email: string }
  * interface Course { id: Id<Course>, name: string }
  *
+ * // It's impossible to mix up user and course id's!
  * function getAssociatedAssignments(state, courseId: Id<Course>)
  */
 export type Id<_P, U extends string | number = number> = U & { readonly _: unique symbol };
