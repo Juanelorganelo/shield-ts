@@ -1,7 +1,0 @@
-{
-  "name": "@shield/schema",
-  "version": "0.0.1",
-  "main": "src/index.ts",
-  "description": "A super-fast, type-safe runtime serialization/deserialization library for TypeScript.",
-  "license": "MIT"
-}
