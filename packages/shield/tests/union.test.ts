@@ -20,9 +20,10 @@ describe("Case", () => {
 });
 
 describe("Case.Tuple", () => {
-  class Token extends Case.Tuple("Token")<[string]> {}
+  class Token extends Case.Tuple("Token")<[string, number]> {}
   test("adds args as properties with the following format `$${argIndex}`", () => {
-    const token = new Token("flop");
+    const token = new Token("flop", 1);
     expect(token.$0).toBe("flop");
+    expect(token.$1).toBe(1);
   });
 });
