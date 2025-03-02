@@ -3,8 +3,8 @@ import {
     type RefinedBrandConstructor,
     type TransparentBrandConstructor,
     type Unbranded,
-} from "./brand.ts";
-import { Case } from "./union.ts";
+} from "./brand";
+import { Case } from "./union";
 
 // Should be Validation
 class Ok<A> extends Case.Tuple("Ok")<[A]> {}
