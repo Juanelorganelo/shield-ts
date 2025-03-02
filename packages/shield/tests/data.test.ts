@@ -1,5 +1,7 @@
 // import { Data } from "../src/data";
 
 describe("Data", () => {
-  test.failing("retrieves properties from it's arguments");
+  test("retrieves properties from it's arguments", () => {
+    throw new Error("Not implemented");
+  });
 });

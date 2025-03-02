@@ -1,10 +1,11 @@
 {
   "name": "@shield/eslint-plugin",
+  "type": "module",
   "version": "0.0.1",
   "description": "An ESLint plugin used with shield for maximum safety and performance",
   "scripts": {
     "build": "tsc",
-    "test": "bun test --preload ./src/tests/setup.ts"
+    "test": "jest"
   },
   "dependencies": {
     "@typescript-eslint/utils": "^8.24.0"
