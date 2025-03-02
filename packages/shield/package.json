@@ -4,7 +4,8 @@
   "description": "A TypeScript library for writing fast, secure and reliable TypeScript programs with as little runtime errors as we believe are (pragmatically) possible",
   "main": "src/index.ts",
   "scripts": {
-    "build": "tsc -p tsconfig.build.json"
+    "build": "tsc -p tsconfig.build.json",
+    "test": "jest"
   },
   "dependencies": {
     "ts-arithmetic": "^0.1.1"

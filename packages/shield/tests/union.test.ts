@@ -1,4 +1,3 @@
-import { expect, test, describe } from "bun:test";
 import { type Brand, transparent, Case } from "../src";
 
 describe("Case", () => {
