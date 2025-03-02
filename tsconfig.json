@@ -23,6 +23,8 @@
 
     // Some stricter flags (disabled by default)
     "noUnusedLocals": true,
-    "noUnusedParameters": true
+    "noUnusedParameters": true,
+
+    "sourceMap": true
   }
 }

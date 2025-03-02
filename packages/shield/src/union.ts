@@ -17,7 +17,7 @@ type TupleProps<
 /**
  * The constructor function for Variant.Tuple instances.
  */
-interface TupleConstructor<Tag extends string> {
+export interface TupleConstructor<Tag extends string> {
   new <A extends unknown[] = []>(...args: A): TupleProps<A> & { readonly tag: Tag };
 }
 
