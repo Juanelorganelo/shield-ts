@@ -47,7 +47,7 @@ function Tuple<const Tag extends string>(tag: Tag): TupleConstructor<Tag> {
       // Since A is a tuple it's small so this is likely faster
       // than using a Proxy on this to read the values from the array.
       let i = args.length;
-      while (--i) {
+      while (i--) {
         (this as Record<string, unknown>)[`$${i}`] = args[i];
       }
     }
