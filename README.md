@@ -10,15 +10,17 @@ This library is still under heavy development
 `shield-ts` is available on the NPM Package Registry and JSR.
 
 ## Features
-
-### Library
+This is an _incomplete_ list of features
 
 - [x] no `Option` type (we already have null-safety in TS with `strictNullChecks`)
 - [x] support for discriminated unions a.k.a. algebraic data-types
 - [x] support for tuple variants of discriminated unions
 - [x] _branded types_ i.e. nominal typing for TypeScript using symbols and intersection types
 - [x] (almost) zero-overhead type-safe wrappers for other types through branded types and `newtype`
-- [ ] has an (optional) ESLint configuration for top-notch DX
+- [x] No paradigm-biased. We don't prescribe functional programming.
+- [ ] Runtime serialization/deserialization fully type-safe (in progress).
+- [ ] ESLint plugin and config that work seamlessly with the library.
+- [ ] Compatible with Standard Schema
 
 ## Concepts
 ### Discriminated unions (a.k.a. ADTs)
