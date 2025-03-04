@@ -1,98 +1,125 @@
-import {
-    type BrandOf,
-    type RefinedBrandConstructor,
-    type TransparentBrandConstructor,
-    type Unbranded,
-} from "./brand";
-import { Case } from "./union";
+/**
+ * Runtime serialization/deserialization for typesafe data.
+ * Uses all the power of shield-ts validation to ensure type safety and consistency accross your application.
+ */
+import { BrandConstructor } from "./brand";
 
-// Should be Validation
-class Ok<A> extends Case.Tuple("Ok")<[A]> {}
-class Err<E> extends Case.Tuple("Err")<[E]> {}
-type Result<A, E> = Ok<A> | Err<E>;
-
-class DecodeError extends Error {
-    constructor(readonly path: string[], readonly error: string, options?: ErrorOptions) {
-        super(error, options);
+export class EncodeError extends Error {
+    constructor(message: string, options?: ErrorOptions) {
+        super(message, options);
     }
 }
 
-class EncodeError extends Error {
-    constructor(readonly path: string[], readonly error: string, options?: ErrorOptions) {
-        super(error, options);
+export class DecodeError extends Error {
+    constructor(message: string, options?: ErrorOptions) {
+        super(message, options);
     }
 }
 
-interface Schema<in out Out, in out In = Out> {
-    decode(value: In): Result<Out, DecodeError>;
-    encode(value: Out): Result<In, EncodeError>;
+export interface Schema<in out Out, in out In = Out> {
+    type: string;
+    is(value: unknown): value is In;
+    decode: (value: In) => Out | DecodeError;
+    encode: (value: Out) => In | EncodeError;
 }
 
-export type Input<A> = A extends Schema<infer _, infer B> ? B : never;
-export type Output<A> = A extends Schema<infer B, infer _> ? B : never;
-
-export const brand = <B extends TransparentBrandConstructor<any>>(
-    ctor: B,
-): Schema<BrandOf<B>, Unbranded<BrandOf<B>>> => ({
-    decode: (value: Unbranded<BrandOf<B>>) => new Ok(ctor(value)),
-    encode: (value: BrandOf<B>) => new Ok(value as Unbranded<BrandOf<B>>),
-});
-
-export const refine = <B extends RefinedBrandConstructor<any>>(
-    ctor: B,
-): Schema<BrandOf<B>, Unbranded<BrandOf<B>>> => ({
-    decode: (value: Unbranded<BrandOf<B>>) => {
-        const message = ctor(value);
-        if (typeof message === 'string') {
-            return new Err(new DecodeError([], message));
-        }
-        return new Ok(message);
-    },
-    encode: (value: BrandOf<B>) => value as Unbranded<BrandOf<B>>,
-});
-
-export type SchemaFromFields<Fields extends Record<string, Schema<any>>> = Schema<
-    {
-        [K in keyof Fields]: Output<Fields[K]>;
-    },
-    {
-        [K in keyof Fields]: Input<Fields[K]>;
-    }
->;
-
-export const struct = <Fields extends Record<string, Schema<any>>>(fields: Fields): SchemaFromFields<Fields> => {
-    return {
-        // @ts-expect-error Need to fix this to do error accumulation
-        decode(value: Record<string, unknown>) {
-            return Object.fromEntries(
-                Object.entries(fields).map(([key, schema]) => [key, schema.decode(value[key])]),
-            );
-        },
-        // @ts-expect-error Need to fix this to do error accumulation
-        encode(value: Record<string, unknown>) {
-            return Object.fromEntries(
-                Object.entries(fields).map(([key, schema]) => [key, schema.encode(value[key])]),
-            );
-        },
-    };
+type SchemaConfig<Out, In> = {
+    [K in keyof Schema<Out, In>]: Schema<Out, In>[K];
 };
 
-export const array = <A, I>(schema: Schema<A, I>): Schema<A[], I[]> => ({
-    // @ts-expect-error Need to fix this to do error accumulation
-    encode: (value: A[]): Result<I[], EncodeError> => new Ok(value.map(schema.encode)),
-    decode: (value: I[]): Result<A[], DecodeError> => new Ok(value.map(schema.decode as any)),
+const identity = <A>(value: A): A => value;
+const makeSchema = <Out, In = Out>(schema: SchemaConfig<Out, In>): Schema<Out, In> => schema;
+
+export const string = makeSchema<string>({
+    type: "string",
+    is: (value) => typeof value === "string",
+    decode: identity,
+    encode: identity,
 });
 
-const identity = <A>() => ({
-    decode: (value: A) => new Ok(value),
-    encode: (value: A) => new Ok(value),
+export const number = makeSchema<number>({
+    type: "number",
+    is: (value) => typeof value === "number",
+    decode: identity,
+    encode: identity,
 });
 
-export const string = identity<string>();
-export const number = identity<number>();
-export const boolean = identity<boolean>();
-
-export const literal = <A extends string>(literal: A) => ({
-    decode: (value: A) => value === literal ? new Ok(value) : new Err(new DecodeError([], `Expected ${literal}`, { cause: value })),
-    encode: (value: A) => new Ok(value),
+export const boolean = makeSchema<boolean>({
+    type: "boolean",
+    is: (value) => typeof value === "boolean",
+    decode: identity,
+    encode: identity,
 });
+
+
+export const or: {
+    <A, A2, I, I2>(s: Schema<A, I>, s2: Schema<A2, I2>): Schema<A | A2, I | I2>;
+    <A, A2, A3, I, I2, I3>(
+        s: Schema<A, I>,
+        s2: Schema<A2, I2>,
+        s3: Schema<A3, I3>,
+    ): Schema<A | A2 | A3, I | I2 | I3>;
+} = (...schemas: Schema<unknown>[]): Schema<unknown> =>
+    makeSchema({
+        type: "or",
+        is: (value): value is unknown => schemas.some((schema) => schema.is(value)),
+        decode: (value) => {
+            for (const schema of schemas) {
+                const result = schema.decode(value)
+                if (!(result instanceof DecodeError)) {
+                    return result
+                }
+            }
+            return new DecodeError(`No schema matched`)
+        },
+        encode: value => {
+            for (const schema of schemas) {
+                const result = schema.decode(value)
+                if (!(result instanceof EncodeError)) {
+                    return result
+                }
+            }
+            return new EncodeError(`No schema matched`)
+        },
+    });
+
+export const brand = <A extends BrandConstructor<any>>(
+    make: A,
+    schema: Schema<ReturnType<A>, Parameters<A>[0]>,
+) => {
+    type In = Parameters<A>[0];
+    type Out = ReturnType<A>;
+
+    return makeSchema<Out, In>({
+        // FIXME:
+        // This needs to be coupled with a linter rule for it to work properly
+        type: `Brand<${make.name}>`,
+        is: schema.is,
+        decode: (value) => {
+            const r = schema.decode(value);
+            if (r instanceof DecodeError) return r;
+            else return make(r);
+        },
+        encode: (value) => {
+            const r = schema.encode(value);
+            if (r instanceof EncodeError) return r;
+            else return make(r);
+        },
+    });
+};
+
+export const decodeUnknown = <Out, In = Out>(schema: Schema<Out, In>, value: unknown) => {
+    if (schema.is(value)) {
+        return schema.decode(value);
+    } else {
+        return new DecodeError(`Unable to decode value of type ${typeof value} into schema ${schema.type}`);
+    }
+};
+
+export const encode = <Out, In = Out>(schema: Schema<Out, In>, value: Out) => {
+    if (schema.is(value)) {
+        return schema.encode(value);
+    } else {
+        return new EncodeError(`Unable to encode value of type ${typeof value} into schema ${schema.type}`);
+    }
+};

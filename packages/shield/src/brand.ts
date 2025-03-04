@@ -75,3 +75,7 @@ export function refined<A extends AnyBrand>(
     (ctor as RefinedBrandConstructor<A>).throw = _throw;
     return ctor as RefinedBrandConstructor<A>;
 }
+
+export type BrandConstructor<A extends AnyBrand> =
+    | TransparentBrandConstructor<A>
+    | RefinedBrandConstructor<A>;

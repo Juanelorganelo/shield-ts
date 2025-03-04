@@ -15,14 +15,14 @@ type TupleProps<
 >;
 
 /**
- * The constructor function for Variant.Tuple instances.
+ * The constructor function for Case.Tuple instances.
  */
 export interface TupleConstructor<Tag extends string> {
   new <A extends unknown[] = []>(...args: A): TupleProps<A> & { readonly tag: Tag };
 }
 
 /**
- * A utility class for defining the variants of a discriminated union
+ * A utility class for defining the cases of a discriminated union
  * (a.k.a. algebraic data-type) containing tuple data which is accessible with instance.$<index>.
  *
  * @param tag The tag for the discriminated union
