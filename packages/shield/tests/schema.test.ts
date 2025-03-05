@@ -1,4 +1,5 @@
-import { boolean, DecodeError, decodeUnknown, encode, number, string } from "../src/schema";
+import { Brand, transparent } from "../src";
+import { boolean, brand, DecodeError, decodeUnknown, encode, number, string, union } from "../src/schema";
 
 describe("string", () => {
     test("encodes strings", () => {
@@ -39,5 +40,49 @@ describe("boolean", () => {
         const v = decodeUnknown(boolean, true);
         expect(v).not.toBeInstanceOf(DecodeError);
         expect(v as boolean).toBe(true);
+    });
+});
+
+describe("union", () => {
+    test("encodes union types", () => {
+        const v = encode(union(string, number), "flop");
+        expect(v).not.toBeInstanceOf(DecodeError);
+        expect(v as string).toBe("flop");
+
+        const v2 = encode(union(string, number), 2);
+        expect(v2).not.toBeInstanceOf(DecodeError);
+        expect(v2 as number).toBe(2);
+    });
+
+    test("decodes union types", () => {
+        const v = decodeUnknown(union(string, number), "flop");
+        expect(v).not.toBeInstanceOf(DecodeError);
+        expect(v as string).toBe("flop");
+
+        const v2 = decodeUnknown(union(string, number), 2);
+        expect(v2).not.toBeInstanceOf(DecodeError);
+        expect(v2 as number).toBe(2);
+    });
+});
+
+describe("brand", () => {
+    test("encodes transparent branded types", () => {
+        type Flop = string & Brand<"Flop">;
+        const Flop = transparent<Flop>();
+        const schema = brand(Flop, string);
+
+        const v = encode(schema, Flop("flop"));
+        expect(v).not.toBeInstanceOf(DecodeError);
+        expect(v as Flop).toBe("flop");
+    });
+
+    test("decodes transparent branded types", () => {
+        type Flop = string & Brand<"Flop">;
+        const Flop = transparent<Flop>();
+        const schema = brand(Flop, string);
+
+        const v = decodeUnknown(schema, "flop");
+        expect(v).not.toBeInstanceOf(DecodeError);
+        expect(v as Flop).toBe("flop");
     });
 });
