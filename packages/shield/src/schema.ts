@@ -2,7 +2,7 @@
  * Runtime serialization/deserialization for typesafe data.
  * Uses all the power of shield-ts validation to ensure type safety and consistency accross your application.
  */
-import { BrandConstructor } from "./brand";
+import { BrandConstructor } from "./brand.ts";
 
 export class EncodeError extends Error {
     constructor(message: string, options?: ErrorOptions) {
@@ -51,8 +51,7 @@ export const boolean = makeSchema<boolean>({
     encode: identity,
 });
 
-
-export const or: {
+export const union: {
     <A, A2, I, I2>(s: Schema<A, I>, s2: Schema<A2, I2>): Schema<A | A2, I | I2>;
     <A, A2, A3, I, I2, I3>(
         s: Schema<A, I>,
@@ -85,7 +84,7 @@ export const or: {
 
 export const brand = <A extends BrandConstructor<any>>(
     make: A,
-    schema: Schema<ReturnType<A>, Parameters<A>[0]>,
+    schema: Schema<Parameters<A>[0]>,
 ) => {
     type In = Parameters<A>[0];
     type Out = ReturnType<A>;
