@@ -3,9 +3,10 @@ import { AST_NODE_TYPES } from "@typescript-eslint/utils";
 
 export const name = "brand-match-typename";
 export const rule = createRule({
-    create(_context) {
+    create(context) {
         return {
             TSTypeAliasDeclaration(node) {
+                const prefix = context.options[0]?.prefix ?? "";
                 const typeName = node.id.name;
                 if (node.typeAnnotation.type === "TSIntersectionType") {
                     const refs = node.typeAnnotation.types.filter(
@@ -18,10 +19,17 @@ export const rule = createRule({
                     );
 
                     if (brand) {
-                        const brandName = brand.typeArguments?.params[0]?.type;
+                        const brandNameType = brand.typeArguments!.params[0]!;
+                        const brandName =
+                            brandNameType.type === "TSLiteralType" &&
+                            brandNameType.literal.type === "Literal" &&
+                            brandNameType.literal.value;
+
+                        const expectedBrandName = `${prefix}${typeName}`;
+
                         // TODO: Assert that brandName is a string literal type.
-                        if (brandName !== typeName) {
-                            _context.report({
+                        if (brandName !== expectedBrandName) {
+                            context.report({
                                 node,
                                 messageId: "brandNotMatchTypename",
                             });
@@ -41,7 +49,15 @@ export const rule = createRule({
             brandNotMatchTypename: "Brand names for branded types must match their brand name",
         },
         type: "suggestion",
-        schema: [],
+        schema: [
+            {
+                type: "object",
+                properties: {
+                    prefix: { type: "string" },
+                },
+                additionalProperties: false,
+            },
+        ],
     },
-    defaultOptions: [],
+    defaultOptions: [{ prefix: "" }],
 });
