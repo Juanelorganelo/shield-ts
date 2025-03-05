@@ -56,6 +56,10 @@ console.log(student.$0); // blep@bloop.com
 A branded type is just a TypeScript type that's intersecting with a `Brand<{string_literal}>`.
 This allows TypeScript to distinctly identify say `type Money = number & Brand<'Money'>` from `type Grams = number & Brand<'Grams'>` and allows us to create values of those types with (almost) zero runtime overhead.
 
+> Comes with linter plugin to ensure that:
+> 1. Branded types are only used inside type-definitions
+> 2. The brand passed to a Brand<> instantiation MUST match the name of the type alias.
+
 #### Example
 
 ```typescript
