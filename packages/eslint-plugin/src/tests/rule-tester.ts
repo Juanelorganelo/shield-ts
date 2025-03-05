@@ -1,4 +1,3 @@
-import { afterAll, describe, it } from 'bun:test';
 import { RuleTester } from '@typescript-eslint/rule-tester';
 
 RuleTester.it = it;
