@@ -206,7 +206,7 @@ bun test
 
 ## TODO
 
-- [ ] add Zod compatibility
+- [ ] add standard schema compatibility
 - [ ] rename `Variant.Record` to `Case` and `Variant.Tuple` to `Case.Tuple`
 - [ ] research linter rules feassability
   - [ ] functions that use `throw` MUST have `never` in their return type
@@ -220,5 +220,3 @@ bun test
 - [ ] add tests
 - [ ] write real-world examples
 - [ ] write documentation
-
-This project was created using `bun init` in bun v1.1.43. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
