@@ -3,15 +3,17 @@
     // Enable latest features
     "lib": ["ESNext", "DOM"],
     "target": "ESNext",
-    "module": "ESNext",
+    "module": "Preserve",
     "jsx": "preserve",
     "allowJs": false,
 
     // Bundler mode
     "composite": true,
     "declaration": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "esModuleInterop": true,
+    "emitDeclarationOnly": true,
+    "allowImportingTsExtensions": true,
 
     // Best practices
     "strict": true,
