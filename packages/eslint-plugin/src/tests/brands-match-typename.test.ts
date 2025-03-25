@@ -17,26 +17,26 @@ ruleTester.run(brandsMatchTypename.name, brandsMatchTypename.rule, {
             code: `import { type Brand, transparent } from 'shield-ts';
     type UserId = string & Brand<'Whatever'>;
     `,
-            errors: [{ messageId: "brandNotMatchTypename" }],
+            errors: [{ messageId: "brandMustMatchTypeName" }],
         },
         {
             code: `import { type Brand, transparent } from 'shield-ts';
     type Foo = string & Brand<'@org/Foo'>;
     `,
             options: [{ prefix: '@blop/' }],
-            errors: [{ messageId: "brandNotMatchTypename" }],
+            errors: [{ messageId: "brandMustMatchTypeName" }],
         },
         {
             code: `import { type Brand, transparent } from 'shield-ts';
     type Foo = string & Brand<'@org/Foo'>;
     `,
-            errors: [{ messageId: "brandNotMatchTypename" }],
+            errors: [{ messageId: "brandMustMatchTypeName" }],
         },
         {
             code: `import { type Brand, transparent } from 'shield-ts';
     type Foo = string & Brand<'@org/Bar'>;
     `,
-            errors: [{ messageId: "brandNotMatchTypename" }],
+            errors: [{ messageId: "brandMustMatchTypeName" }],
         },
     ],
 });

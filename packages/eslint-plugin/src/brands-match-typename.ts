@@ -20,8 +20,16 @@ export const rule = createRule({
 
                     if (brand) {
                         const brandNameType = brand.typeArguments!.params[0]!;
+
+                        if (brandNameType.type !== 'TSLiteralType') {
+                            context.report({
+                                node: brandNameType,
+                                messageId: "brandMustBeAStringLiteral",
+                            });
+                            return;
+                        }
+
                         const brandName =
-                            brandNameType.type === "TSLiteralType" &&
                             brandNameType.literal.type === "Literal" &&
                             brandNameType.literal.value;
 
@@ -31,7 +39,7 @@ export const rule = createRule({
                         if (brandName !== expectedBrandName) {
                             context.report({
                                 node,
-                                messageId: "brandNotMatchTypename",
+                                messageId: "brandMustMatchTypeName",
                             });
                         }
                     }
@@ -46,7 +54,8 @@ export const rule = createRule({
                 "Ensures that the tag of a branded type matches the name for its `type` alias definition",
         },
         messages: {
-            brandNotMatchTypename: "Brand names for branded types must match their brand name",
+            brandMustMatchTypeName: "The brand name passed to the Brand<> type must match the name of the `type` definition in which it is used",
+            brandMustBeAStringLiteral: 'The type parameter passed to brand must be a string literal'
         },
         type: "suggestion",
         schema: [
