@@ -7,7 +7,7 @@ This library is still under heavy development
 
 ## Installation
 
-`shield-ts` is available on the NPM Package Registry and JSR.
+_very soon_ `shield-ts` is available on the NPM Package Registry and JSR.
 
 ## Features
 This is an _incomplete_ list of features
@@ -17,10 +17,14 @@ This is an _incomplete_ list of features
 - [x] support for tuple variants of discriminated unions
 - [x] _branded types_ i.e. nominal typing for TypeScript using symbols and intersection types
 - [x] (almost) zero-overhead type-safe wrappers for other types through branded types and `newtype`
-- [x] No paradigm-biased. We don't prescribe functional programming.
+- [x] No paradigm-biased. We don't prescribe functional programming. There are already plenty of options for that.
 - [ ] Runtime serialization/deserialization fully type-safe (in progress).
 - [ ] ESLint plugin and config that work seamlessly with the library.
 - [ ] Compatible with Standard Schema
+
+## Why?
+There are already plenty of excelent libraries that provide similar functionalities and much more [(see Effect)](https://effect.website) the biggest problem I have with them being that since they all have `Option` and `Result` types, you end up having to wrap all the native APIs/libraries to handle errors the way the library wants you to. Another thing is that most of these libraries are heavily based around functional programming however all web and Node.js APIs use more of a OOP/strucutred programming aproach which makes the wrapping overhead much greater in some cases. This is mitigated by creating wrapper packages for APIs much like Effect did, the problem with that is now you have to re-learn all the APIs but much more importantly you most likely have to fundamentaly change the way you think about programming in TypeScript. Don't get me wrong, I still love Effect and use it all the time, I just want an alternative for some smaller projects that still require complex logic and algorithms.
+
 
 ## Concepts
 ### Discriminated unions (a.k.a. ADTs)
@@ -132,7 +136,7 @@ class SmtpClient {
 async function sendEmail(email: Email): Promise<string> {
   const smtp = new SmtpClient();
 
-  // All Email values are
+  // All Email values are also valid strings but not the other way around.
   const address = new TextEncoder().encode(email);
   const contents = new TextEncoder().encode("Hello");
   await smtp.send(address, contents);
