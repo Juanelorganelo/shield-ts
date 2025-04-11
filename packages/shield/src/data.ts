@@ -26,7 +26,7 @@ export function Data(): DataConstructor {
                     if (args && Reflect.has(args, p)) return Reflect.get(args, p, receiver);
                     else return Reflect.get(target, p, receiver);
                 },
-                set(target, p, newValue) {
+                set(_target, p, _newValue) {
                     throw new TypeError(
                         `Attempted to set property ${String(p)} on a data class. Properties on data classes are readonly`,
                     );
