@@ -87,3 +87,5 @@ export function Case<const Tag extends string>(tag: Tag): RecordConstructor<Tag>
  * @returns A class constructor that creates a Variant instance.
  */
 Case.Tuple = Tuple;
+
+export type Constructor<Tag extends string> = RecordConstructor<Tag> | TupleConstructor<Tag>;
