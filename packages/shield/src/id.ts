@@ -1,3 +1,5 @@
+import { Brand } from "./brand";
+
 /**
  * When writing applications it's very common to access data from a database and end up
  * with a type that's similar to this.
@@ -59,7 +61,7 @@
  * // It's impossible to mix up user and course id's!
  * function getAssociatedAssignments(state, courseId: Id<Course>)
  */
-export type Id<_P, U extends string | number = number> = U & { readonly _: unique symbol };
+export type Id<_P, U extends string | number = number> = U & Brand<'Id'>;
 
 /**
  * Creates an Id value of type Id<P, U>.
