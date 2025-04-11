@@ -29,12 +29,25 @@ export const rule = createRule({
                             return;
                         }
                         const { value } = param;
-                        if (value !== node.id?.name) {
-                            _context.report({
-                                node,
-                                messageId: "tagDidNotMatchClassName",
-                            });
-                            return;
+
+                        if (node.id?.name) {
+                            if (value !== node.id?.name) {
+                                _context.report({
+                                    node,
+                                    messageId: "tagDidNotMatchClassName",
+                                });
+                                return;
+                            }
+                        } else {
+                            switch (node.parent.type) {
+                                case AST_NODE_TYPES.VariableDeclarator:
+                                    if (value !== (node.parent.id as { name: string }).name) {
+                                        _context.report({
+                                            node,
+                                            messageId: "tagDidNotMatchClassName",
+                                        });
+                                    }
+                            }
                         }
                     }
                 }
@@ -50,7 +63,7 @@ export const rule = createRule({
                     const [param] = node.superClass.arguments;
 
                     // Prevents against passing a tag with a type that
-                    // gets narrowed to string
+                    // gets narrowed to `string`
                     if (param) {
                         if (param.type !== "Literal" || !isStringValue(param.raw)) {
                             _context.report({

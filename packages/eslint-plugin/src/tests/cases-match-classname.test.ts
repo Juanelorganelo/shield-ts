@@ -8,7 +8,11 @@ ruleTester.run(name, rule, {
         class Leaf<A> extends Case("Leaf")<{ left: Tree<A>, right: Tree<A> }> {}
         type Tree<A> = Node<A> | Leaf<A>`,
         `function Y(tag: string): Function {}
-        class X extends Y("X") {}`
+        class X extends Y("X") {}`,
+        `import { Case } from 'shield-ts'
+        const Node = class<A> extends Case.Tuple("Node")<[A]> {};
+        const Leaf = class<A> extends Case("Leaf")<{ left: Tree<A>, right: Tree<A> }> {};
+        type Tree<A> = Node<A> | Leaf<A>`,
     ],
     invalid: [
         {
