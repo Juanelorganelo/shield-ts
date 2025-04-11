@@ -1,5 +1,5 @@
 import { Brand, transparent } from "../src";
-import { boolean, brand, DecodeError, decodeUnknown, encode, number, string, union } from "../src/schema";
+import { boolean, brand, DecodeError, decodeUnknown, encode, number, string, union } from "../src/experimental/schema";
 
 describe("string", () => {
     test("encodes strings", () => {
