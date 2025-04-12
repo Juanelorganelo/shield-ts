@@ -17,7 +17,7 @@ This is an _incomplete_ list of features
 - [x] support for tuple variants of discriminated unions
 - [x] _branded types_ i.e. nominal typing for TypeScript using symbols and intersection types
 - [x] (almost) zero-overhead type-safe wrappers for other types through branded types and `newtype`
-- [x] No paradigm-biased. We don't prescribe functional programming. There are already plenty of options for that.
+- [x] No paradigm-biased. We don't prescribe functional programming. We just want more typesafety, not to change your programming model.
 - [ ] Runtime serialization/deserialization fully type-safe (in progress).
 - [ ] ESLint plugin and config that work seamlessly with the library.
 - [ ] Compatible with Standard Schema
@@ -62,11 +62,13 @@ This allows TypeScript to distinctly identify say `type Money = number & Brand<'
 
 > Comes with linter plugin to ensure that:
 > 1. Branded types are only used inside type-definitions
-> 2. The brand passed to a Brand<> instantiation MUST match the name of the type alias.
+> 2. The brand passed to a Brand<B> instantiation MUST match the name of the type alias.
+> ```ts
+> import
 
 #### Example
 
-```typescript
+```ts
 import { type Brand, transparent } from "shield-ts";
 
 type Grams = number & Brand<'Grams'>;
@@ -80,11 +82,12 @@ declare function doSomeMgCalc(mg: Milligrams): Grams;
 doSomeMgCalc();
 ```
 
-#### Caveats
+#### ~~Caveats~~
 
-Because of limitations with TypeScript (in particular lack of higher-kinded polymorphism or metaprogramming facilities) we can't currently create brand constructors for a type with generic parameters.
+~~Because of limitations with TypeScript (in particular lack of higher-kinded polymorphism or metaprogramming facilities) we can't currently create brand constructors for a type with generic parameters.~~
 
-```typescript
+This could actually be done if we figure out a non-controversial API to do something like [this](https://www.cl.cam.ac.uk/~jdy22/papers/lightweight-higher-kinded-polymorphism.pdf) in TypeScript. In the meantime, the following instructions are still relevant.
+```ts
 import { type Brand, transparent } from 'shield-ts';
 
 export type Id<P> = number & Brand<'Id'>;
@@ -94,7 +97,7 @@ export const id = transparent<Id<???>>();
 
 We can however, create constructor the type by hand.
 
-```typescript
+```ts
 import { type Brand } from 'shield-ts';
 
 export type Id<P> = number & Brand<'Id'>;
@@ -112,7 +115,7 @@ In `shield-ts` smart constructors are created by defining a _branded type_ and u
 
 #### Example
 
-```typescript
+```ts
 import { type Brand, refined } from "shield-ts";
 
 // Branded types.
@@ -213,18 +216,17 @@ bun test
 ```
 
 ## TODO
-
-- [ ] add standard schema compatibility
-- [ ] rename `Variant.Record` to `Case` and `Variant.Tuple` to `Case.Tuple`
-- [ ] research linter rules feassability
-  - [ ] functions that use `throw` MUST have `never` in their return type
-  - [ ] functions with `never` as their return type MUST throw or call a `throw`ing function. These can be added by adding the function name to a list and checking node names (I think)
-  - [ ] tags for discriminated unions and branded types MUST match their constructor name
+- [ ] research and design an API for lighweight higher-kinded polymorphism in TypeScript
+- [ ] add a runtime type system with standard schema compatibility
+    - [ ] research a set-theoretic foundation for the runtime type system
+    - [ ] research set-theoretic HKTs
+- [ ] revisit design for the API for ADTs
+- [x] research linter rules feasability
+  - [x] tags for discriminated unions and branded types MUST match their constructor name
     > NOTE: add option to allow for prepending the module name and/or literal prefixes e.g. org name
 - [ ] add linter configuration
   - [ ] custom rules
   - [ ] existing typescript rules
-  - [ ] research using eslint-plugin-functional
 - [ ] add tests
 - [ ] write real-world examples
 - [ ] write documentation
