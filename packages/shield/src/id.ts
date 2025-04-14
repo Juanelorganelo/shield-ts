@@ -60,6 +60,16 @@ import { Brand } from "./brand";
  *
  * // It's impossible to mix up user and course id's!
  * function getAssociatedAssignments(state, courseId: Id<Course>)
+ *
+ * // combined with _branded types_ we could have much stronger type-safety guarantees
+ * import { refined } from "shield-ts"
+ *
+ * export type Email = string & Brand<'Email'>;
+ * // Note that this is not exported.
+ * // This is important since we want people to only get emails
+ * // from actual email addresses.
+ * const Email = refined<Email>();
+ * interface SafeUser { id: Id<User>, email: Email }
  */
 export type Id<_P, U extends string | number = number> = U & Brand<'Id'>;
 
