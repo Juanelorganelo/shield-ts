@@ -82,20 +82,14 @@ declare function doSomeMgCalc(mg: Milligrams): Grams;
 doSomeMgCalc();
 ```
 
-#### ~~Caveats~~
+#### Caveats
 
 ~~Because of limitations with TypeScript (in particular lack of higher-kinded polymorphism or metaprogramming facilities) we can't currently create brand constructors for a type with generic parameters.~~
 
-This could actually be done if we figure out a non-controversial API to do something like [this](https://www.cl.cam.ac.uk/~jdy22/papers/lightweight-higher-kinded-polymorphism.pdf) in TypeScript. In the meantime, the following instructions are still relevant.
-```ts
-import { type Brand, transparent } from 'shield-ts';
+> This could actually be done if I can figure out a less verbose API than what is currently available in the wild to do something like [this](https://www.cl.cam.ac.uk/~jdy22/papers/lightweight-higher-kinded-polymorphism.pdf) in TypeScript. In the meantime, the following instructions are still relevant.
 
-export type Id<P> = number & Brand<'Id'>;
-// What do we set "P" to?
-export const id = transparent<Id<???>>();
-```
-
-We can however, create constructor the type by hand.
+With our current implementation, we can't automatically construct the type signature for you at the moment.
+You can however, create constructor the type by hand.
 
 ```ts
 import { type Brand } from 'shield-ts';
@@ -217,6 +211,7 @@ bun test
 
 ## TODO
 - [ ] research and design an API for lighweight higher-kinded polymorphism in TypeScript
+    - [ ] as an alternative, research feasabilty of internal usage only
 - [ ] add a runtime type system with standard schema compatibility
     - [ ] research a set-theoretic foundation for the runtime type system
     - [ ] research set-theoretic HKTs
