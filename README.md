@@ -62,7 +62,7 @@ This allows TypeScript to distinctly identify say `type Money = number & Brand<'
 
 > Comes with linter plugin to ensure that:
 > 1. Branded types are only used inside type-definitions
-> 2. The brand passed to a Brand<B> instantiation MUST match the name of the type alias.
+> 2. The brand passed to a Brand<B> instantiation MUST match the name of the type alias. We allow for module and org prefixes
 > ```ts
 > import
 
@@ -168,31 +168,6 @@ emailInput.addEventListener("change", async (event) => {
 // This option throws if validation fails.
 // Very useful when prototyping.
 // const address = email.throw(event.target.value);
-```
-
-### Phantom types
-
-_phantom types_ aren't a `shield-ts` concept but more of a general programming concept. A phantom type is at it's core a type parameter that's not used in the type definition. You may wonder what's the point of declaring an unsued type parameter, well when used in conjuction with branded types we can use it to encode information at compile-time about the behaviour of our program. Let's say we're writing a web application, in this app we need to differentiate between `Id`s of different types. We can achieve this by adding a _phantom type_ that acts like a _discriminant_ so that `Id<User>` and `Id<Item>` have different type system identities
-
-```ts
-import { type Brand, transparent, Case, Data } from "shield-ts";
-
-export type Id<Tid, A> = A & Brand<"Id">;
-/**
- * We can't create constructors for branded types with generics
- * but you can define them yourself by hand.
- * For this reason, we export commonly used branded types with generics.
- * As such, the type define in this example is already bundled with the library.
- */
-export const id = <Tid, A>(value: A): Id<Tid, A> => value as Id<Tid, A>;
-
-export type Username = string & Brand<"Username">;
-export const username = transparent<Username>();
-
-export class User extends Data<{
-  readonly id: Id<User, number>;
-  readonly username: Username;
-}> {}
 ```
 
 ## Development
