@@ -170,6 +170,56 @@ emailInput.addEventListener("change", async (event) => {
 // const address = email.throw(event.target.value);
 ```
 
+### Phantom types
+```ts
+namespace Parser {
+    // Notice the variance annotation.
+    // Invariant phantom type parameters is probably what you want
+    // but there may be other use cases for phantom types in TS.
+    interface Parser<in out _State> {
+        readonly input: string
+        readonly parsed: string[]
+        readonly current: number
+    }
+
+    class Local extends Case("Local") {}
+    class Domain extends Case("Domain") {}
+
+    export const make = (input: string): Parser<Local> => ({
+        input,
+        parsed: [],
+        current: 0,
+    })
+
+    export const parseLocal = (self: Parser<Local>): Parser<Domain> => {
+        let current = self.current
+
+        const parsed = []
+        while (current < self.input.length) {
+            parsed.push(self.input.charAt(current))
+            ++current
+        }
+
+        return { ...self, parsed }
+    }
+
+    export const parseDomain = (self: Parser<Domain>): string => {
+        let current = self.current
+
+        const parsed: string[] = []
+        while (current < self.input.length) {
+            parsed.push(self.input.charAt(current))
+            ++current
+        }
+
+        return [...self.parsed, ...parsed].join('')
+    }
+}
+```
+
+Using this API is safer since you can only call `parseDomain` with a `Parse<Domain>` value and the only (safe) way to produce one
+is by calling the `parseLocal` function. This effectively encodes the parser constraints at compile-time.
+
 ## Development
 
 ### Install dependencies
