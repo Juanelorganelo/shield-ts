@@ -174,7 +174,7 @@ emailInput.addEventListener("change", async (event) => {
 ```ts
 namespace Parser {
     // Notice the variance annotation.
-    // Invariant phantom type parameters is probably what you want
+    // This isn't needed when using
     // but there may be other use cases for phantom types in TS.
     interface Parser<in out _State> {
         readonly input: string
@@ -218,7 +218,7 @@ namespace Parser {
 ```
 
 Using this API is safer since you can only call `parseDomain` with a `Parser<Domain>` value and the only (safe) way to produce one
-is by calling the `parseLocal` function. This effectively encodes the parser constraints at compile-time since trying to call `parseDomain` with a `Parser<Local>` the program will fail to compile with the message `"Type Parser<Local> is not assignable to Parser<Domain>. Type Local is not assignable to type Domain".`. Same goes for the `parseLocal`
+is by calling the `parseLocal` function. This effectively encodes the parser constraints at compile-time since trying to call `parseDomain` with a `Parser<Local>` value will produce the following compile error `"Type Parser<Local> is not assignable to Parser<Domain>. Type Local is not assignable to type Domain".`. Same goes for the `parseLocal` function.
 
 ## Development
 
