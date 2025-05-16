@@ -217,8 +217,8 @@ namespace Parser {
 }
 ```
 
-Using this API is safer since you can only call `parseDomain` with a `Parse<Domain>` value and the only (safe) way to produce one
-is by calling the `parseLocal` function. This effectively encodes the parser constraints at compile-time.
+Using this API is safer since you can only call `parseDomain` with a `Parser<Domain>` value and the only (safe) way to produce one
+is by calling the `parseLocal` function. This effectively encodes the parser constraints at compile-time since trying to call `parseDomain` with a `Parser<Local>` the program will fail to compile with the message `"Type Parser<Local> is not assignable to Parser<Domain>. Type Local is not assignable to type Domain".`. Same goes for the `parseLocal`
 
 ## Development
 
